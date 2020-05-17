@@ -1,2 +1,2 @@
 # encoding-module
-pequeno modulo de para codificar y encriptar :v
+pequeno modulo para codificar y encriptar :v
