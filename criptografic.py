@@ -24,7 +24,7 @@ def Convert_Decimal_Reverse_Str(data):
         del(data, decimal, i)
     except UnboundLocalError:
         pass
-    return (datosDecimalStr, datosDecimal)
+    return [datosDecimalStr, datosDecimal]
 
 
 
@@ -64,7 +64,7 @@ def Desconvert_Decimal(dataDecimal):
         datosDescodificadosStr = str(datosDescodificadosStr) + str(decimal)
 
     del(dataDecimal, decimal, i)
-    return (datosDescodificadosStr, datosDescodificados)
+    return [datosDescodificadosStr, datosDescodificados]
 
 
 def Convert_Hexadecimal(dataDecimal):
@@ -95,7 +95,7 @@ def Convert_Hexadecimal(dataDecimal):
     except UnboundLocalError:
         pass
 
-    return (datosHexadecimalesStr, datosHexadecimales)
+    return [datosHexadecimalesStr, datosHexadecimales]
 
 
 
@@ -119,7 +119,7 @@ def Convert_Binari(dataDecimal):
     except UnboundLocalError:
         pass
 
-    return (datosHexadecimalesStr, datosHexadecimales)
+    return [datosHexadecimalesStr, datosHexadecimales]
 
 
 def Cifrado_Cesar_Simple(Data, Number, estado="coding"):
@@ -140,7 +140,7 @@ def Cifrado_Cesar_Simple(Data, Number, estado="coding"):
     except UnboundLocalError:
         pass
 
-    return (datosStr, DataOput)
+    return [datosStr, DataOput]
 
 def Todos_Los_Cifrados(Datos, NumeroCrifradoCesar=4567):
     decimal = Convert_Decimal_Reverse_Str(str(Datos))
@@ -154,7 +154,15 @@ def Todos_Los_Cifrados(Datos, NumeroCrifradoCesar=4567):
     except UnboundLocalError:
         del(NumeroCrifradoCesar)
 
-    return (decimal, hexa, binario, difc, reverse)
+    return [decimal, hexa, binario, difc, reverse]
 
 if __name__ == "__main__":
     print(Todos_Los_Cifrados(str(input("introduce tus datos: "))))
+    file = open(str(input("archivo a codificar: ")), "r")
+    data = file.read()
+    data = Todos_Los_Cifrados(str(data))
+    print(data)
+    file.close()
+    file = open("oput.txt", "w")
+    file.writelines(str(data))
+    file.close()
