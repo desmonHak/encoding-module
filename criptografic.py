@@ -16,7 +16,7 @@ __doc__ = """
 __Autor__ = "Desmon"
 __description__ = 'este modulo ofrce encriptaciones'
 __copyright__ = ["Desmon"]
-__version__ = 2.2
+__version__ = 3.0
 __license__ = 'Apache 2.0'
 __title__ = 'criptografic'
 
