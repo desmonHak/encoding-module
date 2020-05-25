@@ -4,7 +4,6 @@ import base64
 
 from time import localtime
 from random import randint, sample
-from criptogrfic import *
 from re import search
 from string import ascii_lowercase, ascii_uppercase, digits
 
