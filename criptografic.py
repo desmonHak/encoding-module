@@ -4,6 +4,8 @@ import base64
 
 from time import localtime
 from random import randint, sample
+from criptogrfic import *
+from re import search
 from string import ascii_lowercase, ascii_uppercase, digits
 
 __doc__ = """
@@ -35,7 +37,36 @@ def Convert_Decimal_Reverse_Str(data):
         pass
     return [datosDecimalStr, datosDecimal]
 
-
+def _Serch(string, comienzo, limite, z=50, b=50):
+    estado = False
+    dataOput = []
+    for a in string:
+        if str(a) == str(comienzo):
+            estado = True
+        elif str(a) == str(limite):
+            estado = False
+        if estado == True:
+            dataOput.append(str(a))
+    dataOputFinally = ""
+    longitud = len(dataOput)
+    dataOput.pop(0)
+    estado = 0
+    while True:
+        if estado == b:
+            break
+        try:
+        	dataOput.pop(int(z))
+        except IndexError:
+        	pass
+        estado += 1
+    for i in range(0, int(longitud)):
+        try:
+            a = str(dataOput[i])
+            dataOputFinally = str(dataOputFinally) + str(a)
+        except IndexError:
+            pass
+    del((z, estado))
+    return str(dataOputFinally)
 
 def Reverse_Str(data):
     data = list(data)
@@ -196,10 +227,10 @@ def Decrypt_1(data, clave):
 
     return [dataOput[0], dataOput[1]]
 
-def Encript_2(data, conjunto="no", TypeOput="None" ,ValueMax=5631, ValueMini=5024, hashMax=32):
+def Encript_2(data, conjunto="no", TypeOput="None" ,ValueMax=randint(5500, 9000)-randint(30, 156), ValueMini=randint(55, 5500)-randint(30, 156), hashMax=32):
 
     randonString = ascii_lowercase+ascii_uppercase
-    randonStringAll = randonString  +digits
+    randonStringAll = randonString + digits
 
     if data == "":
         raise Exception("\033[1;31m<Data-0> You should inputs the data, why you input None\033[1;37m")
@@ -242,7 +273,7 @@ def Encript_2(data, conjunto="no", TypeOput="None" ,ValueMax=5631, ValueMini=502
         second = randint(0, _time[5])  # 0
         minuts = randint(0, _time[4])  # 0
         hora = randint(0, _time[3])    # 0
-        dataTime = str(hora)+ str(second)+ str(minuts)
+        dataTime = str(hora) + "$" + str(second) + "&" + str(minuts)+ "&"
 
         if len(list(dataTime)) > 3:
             break
@@ -258,23 +289,46 @@ def Encript_2(data, conjunto="no", TypeOput="None" ,ValueMax=5631, ValueMini=502
     hashing += str(randomeNumber)
     del randomeNumber
 
+
     if int(hashMax) > len(list(hashing)):
         hashing +=  str(randint(0, 4)) # 0-4 [yes], 5-9 [no]
     else:
         hashing +=  str(randint(5, 9))
 
+
     while True:
         if int(hashMax-1) > len(list(hashing)):
-            hashing += str("".join(sample(str(randonStringAll), 1)))
+            hashing += str(ord( str("".join(sample(str(randonStringAll), 1))) ))
         else:
             break
     del randonStringAll
 
+
     def _conjuntoNo(data, hashing=str(hashing), TypeOput=str(TypeOput)):
 
-        _multixor = int(randint(int(randint(0, 9600)), 9706))
-        _Longitud = len(list(hashing)) * int(_multixor) / 150
-        hashing += str(chr(_multixor))
+        while True:
+            _multixor = int(randint(int(randint(0, 5600)), 9706))
+            if len(list(str(chr(_multixor)))) == 1:
+                try:
+                    _multixor = int(_multixor)
+                    pass
+                except:
+                    pass
+                hashing += str(chr(_multixor))
+                #print(str(chr(_multixor)))
+                break
+            else:
+                pass
+
+        #_Longitud = len(list(hashing)) * int(_multixor) / 150
+        _Longitud = len(list(hashing))
+
+        #hora = _Serch(str(".")+str(hashing), ".", "$") #str(hora) + "$" + str(second) + "&" + str(minuts)+ "&"
+
+        hashing_Descript = int(_Longitud) + int(ord(list(hashing)[int(_Longitud-1)]))+int(_Serch(str(".")+str(hashing), ".", "$"))
+        _Longitud = int(hashing_Descript+_multixor)
+
+
         del _multixor
 
         dataOput = Cifrado_Cesar_Simple(str(data), int(_Longitud), estado="coding")
@@ -305,7 +359,7 @@ def Encript_2(data, conjunto="no", TypeOput="None" ,ValueMax=5631, ValueMini=502
 
     del hashing
 
-    def _conjuntoYes(data, conjunto="no", TypeOput="None" ,ValueMax=5631, ValueMini=5024, hashMax=32):
+    def _conjuntoYes(data, conjunto="no", TypeOput="None" ,ValueMax=int(ValueMax)-randint(30, 156), ValueMini=int(ValueMini)-randint(30, 156), hashMax=32):
         dataOputRaw = []
         dataStr = ""
         dataHashsing = []
@@ -321,7 +375,9 @@ def Encript_2(data, conjunto="no", TypeOput="None" ,ValueMax=5631, ValueMini=502
         dataOput = _conjuntoNo(str(data))
         hashing = str(dataOput[1])
     elif str(conjunto) == "yes":
-        dataOput = _conjuntoYes(str(data))
+        d1 = _conjuntoYes(str(data))
+        dataOput = ( d1[0], d1[1], d1[2])
+        del d1
     else:
         raise Exception("\033[1;31m<Argument-Error> Argument Invalid, Encript_2(data, ('no' or 'yes'))\033[1;37m")
 
@@ -335,15 +391,14 @@ def Todos_Los_Cifrados(Datos, NumeroCrifradoCesar=4567):
     difc = Cifrado_Cesar_Simple(str(Datos), int(NumeroCrifradoCesar))
     reverse = Reverse_Str(str(Datos))
     encript_1 = Encript_1(str(Datos))
-    encript_2 = Encript_2(str(Datos), conjunto="yes", hashMax=64)
+    encript_2 = Encript_2(str(Datos), conjunto="yes", hashMax=64, ValueMax=9000, ValueMini=55)
 
     try:
         del(datos)
     except UnboundLocalError:
         pass
 
-    return '{"datos en decimal":'+str(decimal)+'\n"datos en hexadecimal":'+str(hexa)+'\n"datos en binario":'+str(binario)+'\n"datos aplicando un cifrado cesar con el digito por defecto":' + str(NumeroCrifradoCesar) + ':'+str(difc)+'\n"datos volteados":'+str(reverse)+'\n"datos aplicandoles la funcion Encript_1:"'+str(encript_1)+'\n"datos aplicandoles la funcion Encript_2":'+str(encript_2)+'\n}'
-
+    return '{\n"datos en decimal":'+str(decimal)+'\n"datos en hexadecimal":'+str(hexa)+'\n"datos en binario":'+str(binario)+'\n"datos aplicando un cifrado cesar con el digito por defecto":' + str(NumeroCrifradoCesar) + ':'+str(difc)+'\n"datos volteados":'+str(reverse)+'\n"datos aplicandoles la funcion Encript_1:"'+str(encript_1)+'\n"datos aplicandoles la funcion Encript_2":'+str(encript_2)+'\n}'+"\n\n\n"+str(encript_2[1])
 
 if __name__ == "__main__":
     print(Todos_Los_Cifrados(str(input("introduce tus datos: "))))
@@ -355,3 +410,4 @@ if __name__ == "__main__":
     #file = open("oput.txt", "w")
     #file.writelines(str(data))
     #file.close()
+    # print(Encript_2("Hola Mundo!, que tal?", conjunto="yes")[1])
